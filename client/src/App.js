@@ -21,19 +21,21 @@ const App = () => {
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [solve, setSolve] = useState(false);
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState(null);
+  const [resultText, setResultText] = useState("");
 
   const handleSubmit = async () => {
     const formData = new FormData();
-    formData.append('file', fileList[0]);
+    formData.append('file', fileList[0].originFileObj);
     formData.append('solve', solve);
 
     setUploading(true);
 
     try {
-      const res = await axios.post(API_URL, formData);
+      const res = await axios.post(`${API_URL}/upload`, formData);
 
       setResult(res.data);
+      setResultText(res.data.extractedText);
       message.success('Upload successful!');
     } catch (err) {
       message.error('Upload failed');
@@ -113,11 +115,11 @@ const App = () => {
 
           <Row gutter={16} justify="center" style={{ marginTop: 50 }}>
             <Col
-              span={10}
+              span={12}
               style={{
                 display: "flex",
                 flexDirection: "row",
-                alignItems: "center"
+                justifyContent: "center"
             }}
             >
               <Title
@@ -133,7 +135,7 @@ const App = () => {
                 onChange={(checked) => setSolve(checked)}
               />
             </Col>
-            <Col span={10}>
+            <Col span={12}>
               <Button
                 style={{ width: "100%" }}
                 type={"primary"}
@@ -151,8 +153,8 @@ const App = () => {
                 Result:
               </Title>
               <Card style={{ backgroundColor: "#e3e3ea", minHeight: 100, width: "100%"}}>
-                {result !== "" && result !== null && result !== undefined ?
-                  <Paragraph copyable>{result}</Paragraph>
+                {resultText !== "" && resultText !== null && resultText !== undefined ?
+                  <Paragraph copyable>{resultText}</Paragraph>
                   :
                   <Text type={"secondary"}>No Data</Text>
                 }

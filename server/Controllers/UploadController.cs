@@ -1,18 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using server.Services;
+using server.Models;
 
-namespace YourNamespace.Controllers
+namespace server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class UploadController : ControllerBase
     {
+        private readonly AzureTextRecognitionService _textRecognitionService;
         private readonly string _imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+        public UploadController(AzureTextRecognitionService textRecognitionService)
+        {
+            _textRecognitionService = textRecognitionService;
+        }
 
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadImage([FromForm] UploadRequest request)
         {
-            var image = request.Image;
+            var image = request.File;
 
             if (image == null || image.Length == 0)
                 return BadRequest("No image uploaded.");
@@ -31,7 +39,9 @@ namespace YourNamespace.Controllers
                 await image.CopyToAsync(stream);
             }
 
-            return Ok(new { message = "Image uploaded successfully", fileName });
+            string extractedText = await _textRecognitionService.ReadTextFromImageAsync(path);
+
+            return Ok(new { message = "Image uploaded and processed successfully", fileName, extractedText });
         }
     }
 }

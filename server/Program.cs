@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,17 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for uploading images",
     });
 });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+builder.Services.AddScoped<AzureTextRecognitionService>();
 
 var app = builder.Build();
 
@@ -25,6 +37,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     });
 }
 
+app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
