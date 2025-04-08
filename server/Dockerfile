@@ -3,11 +3,10 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # Copy the project file and restore dependencies
-COPY server/*.csproj ./server/
-WORKDIR /app/server
+COPY *.csproj ./
 RUN dotnet restore
 
-# Copy the remaining source code and build the project
+# Copy the rest of the code and publish
 COPY . .
 RUN dotnet publish -c Release -o /app/out
 
@@ -16,10 +15,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 COPY --from=build /app/out ./
 
-# Expose the HTTP port
+# Expose HTTP port
 EXPOSE 80
 
-# Set Azure environment variables (can be overridden in the hosting environment)
+# Set environment variables for Azure Cognitive Services
 ENV VISION_KEY=your_vision_key
 ENV VISION_ENDPOINT=your_vision_endpoint
 
