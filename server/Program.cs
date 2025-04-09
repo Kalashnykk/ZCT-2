@@ -44,11 +44,11 @@ app.UseAuthorization();
 
 
 
-var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
-if (!Directory.Exists(imageFolder))
-{
-    Directory.CreateDirectory(imageFolder);
-}
+// var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+// if (!Directory.Exists(imageFolder))
+// {
+//     Directory.CreateDirectory(imageFolder);
+// }
 
 // Serve static files from the Images folder
 var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
