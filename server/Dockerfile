@@ -13,6 +13,10 @@ RUN dotnet publish -c Release -o /app/out
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
+
+# Create the Images folder for static file serving
+RUN mkdir /app/Images
+
 COPY --from=build /app/out ./
 
 # Expose HTTP port
@@ -24,3 +28,4 @@ ENV VISION_ENDPOINT=your_vision_endpoint
 
 # Start the application
 ENTRYPOINT ["dotnet", "server.dll"]
+
