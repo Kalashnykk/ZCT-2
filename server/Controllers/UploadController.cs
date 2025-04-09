@@ -41,7 +41,15 @@ namespace server.Controllers
 
             string extractedText = await _textRecognitionService.ReadTextFromImageAsync(path);
 
-            return Ok(new { message = "Image uploaded and processed successfully", fileName, extractedText });
+            var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
+
+            return Ok(new
+            {
+                message = "Image uploaded and processed successfully",
+                fileName,
+                imageUrl,
+                extractedText
+            });
         }
     }
 }
