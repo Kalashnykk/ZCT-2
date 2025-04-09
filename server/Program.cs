@@ -42,6 +42,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 app.UseCors();
 app.UseAuthorization();
 
+
+
+var imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+if (!Directory.Exists(imageFolder))
+{
+    Directory.CreateDirectory(imageFolder);
+}
+
 // Serve static files from the Images folder
 var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
 app.UseStaticFiles(new StaticFileOptions
