@@ -6,9 +6,10 @@ namespace server.Services
 {
     public class MathExpressionValidator
     {
-        public bool Validate(string input, out List<string> errors)
+        public bool Validate(string input, out List<string> errors, out string cleanedExpression)
         {
             errors = new List<string>();
+            cleanedExpression = "";
 
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -21,12 +22,15 @@ namespace server.Services
                 errors.AddRange(structureErrors);
 
             // Check for consecutive operators (e.g. ++, **, etc.)
-            if (Regex.IsMatch(input, @"[\+\-\*/\^]{2,}"))
+            if (Regex.IsMatch(input, @"[\+\-\*/]{2,}"))
                 errors.Add("Expression contains consecutive operators.");
 
             // Check if expression ends with an operator
-            if (Regex.IsMatch(input.Trim(), @"[\+\-\*/\^]$"))
+            if (Regex.IsMatch(input.Trim(), @"[\+\-\*/]$"))
                 errors.Add("Expression ends with an operator.");
+
+            // Remove all whitespace characters
+            cleanedExpression = Regex.Replace(input ?? "", @"\s+", "");
 
             return errors.Count == 0;
         }
@@ -38,8 +42,8 @@ namespace server.Services
         {
             errors = new List<string>();
 
-            if (!Regex.IsMatch(input, @"^[0-9+\-*/^()\s]+$"))
-                errors.Add("Expression contains invalid characters. Allowed: digits, +, -, *, /, ^, (, ), [, ].");
+            if (!Regex.IsMatch(input, @"^[0-9+\-*/()\s]+$"))
+                errors.Add("Expression contains invalid characters. Allowed: digits, +, -, *, /, (, ), [, ].");
 
             if (!AreParenthesesBalanced(input))
                 errors.Add("Unbalanced parentheses.");

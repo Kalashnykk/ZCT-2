@@ -45,26 +45,29 @@ namespace server.Controllers
             if (request.Solve)
             {
                 var validator = new MathExpressionValidator();
-
-                if (validator.Validate(extractedText, out var errors))
+                
+                // Validate the expression
+                if (validator.Validate(extractedText, out var errors, out string valid_string))
                 {
+                    // Calculate the result if string is valid
+                    var result = Calculator.ToCount(valid_string);
+
                     return Ok(new
                     {
-                        message = "Text is a valid math expression, which can be solved.",
+                        message = "Text is a valid math.",
                         fileName,
                         extractedText,
-                        isValid = true
+                        result
                     });
                 }
                 else
                 {
                     return Ok(new
                     {
-                        message = "Following errors were found in the math expression.",
+                        message = "Text is invalid as a math.",
                         errors,
                         fileName,
-                        extractedText,
-                        isValid = false,
+                        extractedText
                     });
                 }
             }
