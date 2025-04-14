@@ -40,6 +40,37 @@ namespace server.Controllers
             }
 
             string extractedText = await _textRecognitionService.ReadTextFromImageAsync(path);
+            
+            //If user chosed to solve the math expression
+            if (request.Solve)
+            {
+                var validator = new MathExpressionValidator();
+                
+                // Validate the expression
+                if (validator.Validate(extractedText, out var errors, out string valid_string))
+                {
+                    // Calculate the result if string is valid
+                    var result = Calculator.ToCount(valid_string);
+
+                    return Ok(new
+                    {
+                        message = "Text is a valid math.",
+                        fileName,
+                        extractedText,
+                        result
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        message = "Text is invalid as a math.",
+                        errors,
+                        fileName,
+                        extractedText
+                    });
+                }
+            }
 
             var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
 
