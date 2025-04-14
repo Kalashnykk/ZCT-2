@@ -18,10 +18,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFirebase", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins("https://rock-and-stone-e0134.web.app",
+            "http://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -39,7 +40,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     });
 }
 
-app.UseCors();
+app.UseRouting();
+app.UseCors("AllowFirebase");
 app.UseAuthorization();
 
 // Serve static files from the Images folder
@@ -52,4 +54,3 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapControllers();
 app.Run();
-
