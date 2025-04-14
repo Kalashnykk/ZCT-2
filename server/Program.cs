@@ -1,5 +1,7 @@
 using Microsoft.OpenApi.Models;
 using server.Services;
+using Microsoft.Extensions.FileProviders;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,15 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 app.UseCors();
 app.UseAuthorization();
+
+// Serve static files from the Images folder
+var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(imageFolderPath),
+    RequestPath = "/Images"
+});
+
 app.MapControllers();
 app.Run();
 
