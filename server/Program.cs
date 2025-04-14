@@ -21,7 +21,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFirebase", policy =>
     {
         policy
-            .WithOrigins("https://rock-and-stone-e0134.web.app")
+            .WithOrigins("https://rock-and-stone-e0134.web.app",
+            "http://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -39,6 +40,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     });
 }
 
+app.UseRouting();
 app.UseCors("AllowFirebase");
 app.UseAuthorization();
 
@@ -52,4 +54,3 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.MapControllers();
 app.Run();
-
