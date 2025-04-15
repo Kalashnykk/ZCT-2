@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Services;
 using server.Models;
+using server.Data;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace server.Controllers
 {
@@ -9,11 +12,12 @@ namespace server.Controllers
     public class UploadController : ControllerBase
     {
         private readonly AzureTextRecognitionService _textRecognitionService;
-        private readonly string _imageFolder = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+        private readonly MyDbContext _dbContext;
 
-        public UploadController(AzureTextRecognitionService textRecognitionService)
+        public UploadController(AzureTextRecognitionService textRecognitionService, MyDbContext dbContext)
         {
             _textRecognitionService = textRecognitionService;
+            _dbContext = dbContext;
         }
 
         [HttpPost]
@@ -40,7 +44,10 @@ namespace server.Controllers
             }
 
             string extractedText = await _textRecognitionService.ReadTextFromImageAsync(path);
-            
+            var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
+
+            int? result = null;
+
             //If user chosed to solve the math expression
             if (request.Solve)
             {
@@ -50,36 +57,29 @@ namespace server.Controllers
                 if (validator.Validate(extractedText, out var errors, out string valid_string))
                 {
                     // Calculate the result if string is valid
-                    var result = Calculator.ToCount(valid_string);
-
-                    return Ok(new
-                    {
-                        message = "Text is a valid math.",
-                        fileName,
-                        extractedText,
-                        result
-                    });
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        message = "Text is invalid as a math.",
-                        errors,
-                        fileName,
-                        extractedText
-                    });
+                    result = Calculator.ToCount(valid_string);
                 }
             }
 
-            var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
+            // ✅ Save to database
+            var historyRecord = new tUploadHistory
+            {
+                Image_url = imageUrl,
+                Extracted_text = extractedText,
+                Result = result ?? 0,  // Use 0 if no result calculated
+                DataTime = DateTime.UtcNow
+            };
+
+            _dbContext.tUploadHistory.Add(historyRecord);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(new
             {
                 message = "Image uploaded and processed successfully",
                 fileName,
                 imageUrl,
-                extractedText
+                extractedText,
+                result
             });
         }
     }
