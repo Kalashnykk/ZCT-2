@@ -1,6 +1,6 @@
 ## Directory for server part of an app
 
-### Planned Functionality:
+### Functionality:
  - receiving data from the Frontend Web App
  - sending data(photo) to the model
  - receiving data from model(text from image)
