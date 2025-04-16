@@ -6,7 +6,7 @@ namespace server.Services
 {
     public class Calculator
     {
-        public static string ToCount(string expression)
+        public static int ToCount(string expression)
         {
             Stack<object> st = new Stack<object>();
             List<object> nstr = new List<object>();
@@ -111,7 +111,7 @@ namespace server.Services
                 }
             }
 
-            return count.Pop().ToString();
+            return count.Pop();
         }
 
         static int Precedence(char op)
