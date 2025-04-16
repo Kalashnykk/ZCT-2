@@ -48,30 +48,38 @@ namespace server.Controllers
 
             int? result = null;
 
-            //If user chosed to solve the math expression
             if (request.Solve)
             {
                 var validator = new MathExpressionValidator();
-                
-                // Validate the expression
+
                 if (validator.Validate(extractedText, out var errors, out string valid_string))
                 {
-                    // Calculate the result if string is valid
                     result = Calculator.ToCount(valid_string);
                 }
             }
 
-            // ✅ Save to database
             var historyRecord = new tUploadHistory
             {
                 Image_url = imageUrl,
                 Extracted_text = extractedText,
-                Result = result ?? 0,  // Use 0 if no result calculated
+                Result = result,
                 DataTime = DateTime.UtcNow
             };
 
             _dbContext.tUploadHistory.Add(historyRecord);
             await _dbContext.SaveChangesAsync();
+
+            if (request.Solve && result.HasValue)
+            {
+                return Ok(new
+                {
+                    message = "Image uploaded and processed successfully",
+                    fileName,
+                    imageUrl,
+                    extractedText,
+                    result
+                });
+            }
 
             return Ok(new
             {
@@ -79,7 +87,6 @@ namespace server.Controllers
                 fileName,
                 imageUrl,
                 extractedText,
-                result
             });
         }
     }
