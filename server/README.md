@@ -13,4 +13,5 @@
 2. dotnet add package Microsoft.Azure.CognitiveServices.Vision.ComputerVision
 3. set environment variables VISION_KEY and VISION_ENDPOINT
 (example, in PowerShell: $env:VISION_ENDPOINT = "your endpoint", same for VISION_KEY)
-4. dotnet run
+4. In the `appsettings.json` file, replace the value of the `"DefaultConnection"` field with your **connection string** obtained from the database service Azure SQL Database
+5. dotnet run
