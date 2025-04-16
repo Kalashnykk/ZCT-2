@@ -58,7 +58,6 @@ namespace server.Services
                 .Select(line => line.Text)
                 .ToList();
 
-            Console.WriteLine(string.Join(Environment.NewLine, textOutput));
             return string.Join(Environment.NewLine, textOutput);
         }
     }

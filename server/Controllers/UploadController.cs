@@ -47,6 +47,7 @@ namespace server.Controllers
             var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
 
             int? result = null;
+            string? validString = null;
 
             if (request.Solve)
             {
@@ -55,6 +56,7 @@ namespace server.Controllers
                 if (validator.Validate(extractedText, out var errors, out string valid_string))
                 {
                     result = Calculator.ToCount(valid_string);
+                    validString = String.Copy(valid_string);
                 }
             }
 
@@ -76,7 +78,7 @@ namespace server.Controllers
                     message = "Image uploaded and processed successfully",
                     fileName,
                     imageUrl,
-                    extractedText,
+                    extractedText = validString,
                     result
                 });
             }
