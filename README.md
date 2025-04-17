@@ -49,7 +49,7 @@
 ## 🛠️ Návod na používanie aplikácie:
 
 1. Otvorte si ľubovoľný internetový prehliadač.
-2. Prejdite na webovú stránku aplikácie.
+2. Prejdite na webovú stránku aplikácie: https://rock-and-stone-e0134.web.app
 3. Nahrajte svoje **obrázok** s textom alebo matematickým príkladom.
 4. Ak si želáte okrem extrahovaného textu získať aj riešenie príkladu, zaškrtnite možnosť „Získať riešenie“.
 5. Výsledky sa zobrazia priamo na stránke.
